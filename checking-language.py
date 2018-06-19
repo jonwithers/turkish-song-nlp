@@ -1,19 +1,22 @@
 from common_words import get_list_of_tr_words_1, check_proportions
-from lyrics_scraper import scrape_first_song_lyrics
+from lyrics_scraper import get_artists_list, master_scraper
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
 
-lyrics_df = scrape_first_song_lyrics()
-lyrics = lyrics_df['text'][0].split(" ")
-
-lyrics_df2 = scrape_first_song_lyrics(url = 'http://sarki.alternatifim.com/sarkici/miley-cyrus/4x4-ftnelly')
-lyrics2 = lyrics_df2['text'][0].split(" ")
+list_of_artists = ['sezen-aksu']#,'mogollar', 'ibrahim-tatlises', 'candan-ercetin']
+df = master_scraper(list_of_artists)
+list_of_lyrics = df['text']
 
 dic = get_list_of_tr_words_1()
 
-print(lyrics)
-print(lyrics2)
+scores = []
+for lyric in list_of_lyrics:
+    scores.append(check_proportions(lyric.split(" "), dic))
 
-print(check_proportions(lyrics, dic))
-print(check_proportions(lyrics2, dic))
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.distplot(scores)
+
+plt.show()

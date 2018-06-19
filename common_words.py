@@ -30,7 +30,7 @@ def check_proportions(text, dic):
     for word in text:
         count += word.lower() in dic
 
-    print(count/text_length)
+    # print(count/text_length)
     return(count/text_length)
 
 def get_list_of_tr_words():
