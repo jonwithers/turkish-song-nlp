@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import numpy as np
 import pandas as pd
+import time
 
 def scrape_first_song_lyrics(url = 'http://sarki.alternatifim.com/sarkici/sezen-aksu/1980'):
     results = requests.get(url)
@@ -102,10 +103,10 @@ def master_scraper(list_of_artists):
     })
 
 if __name__ == '__main__':
-    list_of_artists = ['sezen-aksu','mogollar', 'ibrahim-tatlises', 'candan-ercetin', 'mor-ve-otesi', 'tarkan', 'orhan-gencebay', 'bulent-ersoy', 'zeki-muren', 'ahmet-kaya', 'kazim-koyuncu', 'baris-manco', 'baba-zula']
+    # list_of_artists = ['sezen-aksu','mogollar', 'ibrahim-tatlises', 'candan-ercetin', 'mor-ve-otesi', 'tarkan', 'orhan-gencebay', 'bulent-ersoy', 'zeki-muren', 'ahmet-kaya', 'kazim-koyuncu', 'baris-manco', 'baba-zula']
+    list_of_artists = ['orhan-gencebay']
     df = master_scraper(list_of_artists)
-    for i in df['text']:
-        print(i)
-        print("")
-        print("------------")
-    print(df.shape)
+    print('scraped {} songs'.format(df.shape[0]))
+
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    df.to_csv("lyrics_scraped_"+timestr+".csv")
