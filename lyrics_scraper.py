@@ -103,10 +103,10 @@ def master_scraper(list_of_artists):
     })
 
 if __name__ == '__main__':
-    # list_of_artists = ['sezen-aksu','mogollar', 'ibrahim-tatlises', 'candan-ercetin', 'mor-ve-otesi', 'tarkan', 'orhan-gencebay', 'bulent-ersoy', 'zeki-muren', 'ahmet-kaya', 'kazim-koyuncu', 'baris-manco', 'baba-zula']
-    list_of_artists = ['orhan-gencebay']
+    list_of_artists = ['sezen-aksu','mogollar', 'ibrahim-tatlises', 'candan-ercetin', 'mor-ve-otesi', 'tarkan', 'orhan-gencebay', 'bulent-ersoy', 'zeki-muren', 'ahmet-kaya', 'kazim-koyuncu', 'baris-manco']
+    # list_of_artists = ['orhan-gencebay']
     df = master_scraper(list_of_artists)
     print('scraped {} songs'.format(df.shape[0]))
 
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    df.to_csv("lyrics_scraped_"+timestr+".csv")
+    df.to_csv("assets/lyrics/lyrics_scraped_"+timestr+".csv")
