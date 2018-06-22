@@ -50,6 +50,7 @@ def get_artists_list(artist_name='sezen-aksu'):
         results = requests.get(url)
         if results.status_code !='200':
             pass
+        print("Scraping", url)
         soup = BeautifulSoup(results.content, 'lxml')
         try:
             list_items = soup.find('ul').find_all('li')
@@ -74,6 +75,7 @@ def master_scraper(list_of_artists):
         if results.status_code != 200:
             print('Scrape failed')
             pass
+        print("Scraping", url)
         soup = BeautifulSoup(results.content, 'lxml')
         important_content = soup.find('div', {'class': 'ten columns cleft yazim'})
         title_info = important_content.find('div', {'class':'cbottom'})
@@ -102,11 +104,16 @@ def master_scraper(list_of_artists):
         'text':text_col
     })
 
-if __name__ == '__main__':
-    list_of_artists = ['sezen-aksu','mogollar', 'ibrahim-tatlises', 'candan-ercetin', 'mor-ve-otesi', 'tarkan', 'orhan-gencebay', 'bulent-ersoy', 'zeki-muren', 'ahmet-kaya', 'kazim-koyuncu', 'baris-manco']
-    # list_of_artists = ['orhan-gencebay']
-    df = master_scraper(list_of_artists)
-    print('scraped {} songs'.format(df.shape[0]))
+list_of_artists = ['sezen-aksu','mogollar', 'ibrahim-tatlises', 'candan-ercetin', 'mor-ve-otesi', 'tarkan', 'orhan-gencebay', 'bulent-ersoy', 'zeki-muren', 'ahmet-kaya', 'kazim-koyuncu', 'baris-manco', 'sibel-can', 'murat-boz', 'sertab-erener', 'metin-ersoy', 'sebnem-ferah', 'muslum-gurses']
 
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-    df.to_csv("assets/lyrics/lyrics_scraped_"+timestr+".csv")
+if __name__ == '__main__':
+    while 1:
+        artist = input('enter artist to scrape: ')
+        artist = [artist]
+        df = master_scraper(artist)
+        print('scraped {} songs'.format(df.shape[0]))
+
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        df.to_csv("assets/lyrics/by_artist/"+artist[0]+"_scraped_"+timestr+".csv")
+        if input('Continue (1)? ') != '1':
+            break
