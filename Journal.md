@@ -11,4 +11,3 @@ Project outline so far:
 - EDA
   - Still haven't really done this, but there are some trends I've noticed. Most music is prett short, and some genres have many many more words than others.
   - Lyrics contain songs in English and French which is not useful for my project.
-- 
