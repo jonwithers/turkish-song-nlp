@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import numpy as np
 import pandas as pd
+import csv
 import time
 
 def scrape_first_song_lyrics(url = 'http://sarki.alternatifim.com/sarkici/sezen-aksu/1980'):
@@ -60,15 +61,17 @@ def get_artists_list(artist_name='sezen-aksu'):
             return songlist
     return songlist
 
-def master_scraper(list_of_artists):
+def master_scraper(list_of_artists=[]):
     artist_col = []
     title_col = []
     album_col = []
     text_col = []
-
-    master_list = []
-    for artist in list_of_artists:
-        master_list += get_artists_list(artist)
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    # master_list = []
+    # for artist in list_of_artists:
+    #     master_list += get_artists_list(artist)
+    # pd.DataFrame({'master_list':master_list}).to_csv('assets/master_list.csv', index = False)
+    master_list = pd.read_csv('assets/master_list.csv', header = None, names = ['master_list'], skiprows = 46065)['master_list']
     for item in master_list:
         url = 'http://sarki.alternatifim.com' + item
         results = requests.get(url)
@@ -77,26 +80,32 @@ def master_scraper(list_of_artists):
             pass
         print("Scraping", url)
         soup = BeautifulSoup(results.content, 'lxml')
-        important_content = soup.find('div', {'class': 'ten columns cleft yazim'})
-        title_info = important_content.find('div', {'class':'cbottom'})
-        artist_and_song_title = title_info.find('h3').text
-        artist = artist_and_song_title.split('-')[0].strip()
-        song_title = artist_and_song_title.split('-')[1].strip()
         try:
-            album_title = title_info.find('table').find('tbody').find('tr').find_all('td')[2].text
+            important_content = soup.find('div', {'class': 'ten columns cleft yazim'})
+            title_info = important_content.find('div', {'class':'cbottom'})
+            artist_and_song_title = title_info.find('h3').text
+            artist = artist_and_song_title.split('-')[0].strip()
+            song_title = artist_and_song_title.split('-')[1].strip()
+            try:
+                album_title = title_info.find('table').find('tbody').find('tr').find_all('td')[2].text
+            except:
+                album_title = np.nan
+
+            song_text = important_content.find('div', {"class":'sarkisozu'}).text.strip()
+            if song_text.find("<!--") != -1:
+                song_text = song_text[:song_text.find("<!--")]
+            song_text = song_text[:song_text.find('/*')].replace('\r', ' ').replace('\n', '  ').replace('/',' ')
         except:
-            album_title = np.nan
-
-        song_text = important_content.find('div', {"class":'sarkisozu'}).text.strip()
-        if song_text.find("<!--") != -1:
-            song_text = song_text[:song_text.find("<!--")]
-        song_text = song_text[:song_text.find('/*')].replace('\r', ' ').replace('\n', '  ').replace('/',' ')
-
+            pass
         artist_col.append(artist)
         title_col.append(song_title)
         album_col.append(album_title)
         text_col.append(song_text)
 
+        this_row = [artist, song_title, album_title, song_text]
+        with open('assets/' + timestr + '_test.csv', 'a') as csvFile:
+            writer = csv.writer(csvFile)
+            writer.writerow(this_row)
     return pd.DataFrame({
         'artist':artist_col,
         'title':title_col,
@@ -104,16 +113,12 @@ def master_scraper(list_of_artists):
         'text':text_col
     })
 
-list_of_artists = ['sezen-aksu','mogollar', 'ibrahim-tatlises', 'candan-ercetin', 'mor-ve-otesi', 'tarkan', 'orhan-gencebay', 'bulent-ersoy', 'zeki-muren', 'ahmet-kaya', 'kazim-koyuncu', 'baris-manco', 'sibel-can', 'murat-boz', 'sertab-erener', 'metin-ersoy', 'sebnem-ferah', 'muslum-gurses']
+# list_of_artists = ['sezen-aksu','mogollar', 'ibrahim-tatlises', 'candan-ercetin', 'mor-ve-otesi', 'tarkan', 'orhan-gencebay', 'bulent-ersoy', 'zeki-muren', 'ahmet-kaya', 'kazim-koyuncu', 'baris-manco', 'sibel-can', 'murat-boz', 'sertab-erener', 'metin-ersoy', 'sebnem-ferah', 'muslum-gurses']
 
 if __name__ == '__main__':
-    while 1:
-        artist = input('enter artist to scrape: ')
-        artist = [artist]
-        df = master_scraper(artist)
+        # list_of_artists = pd.read_csv('assets/list_of_artists.csv')['artist']
+        df = master_scraper()
         print('scraped {} songs'.format(df.shape[0]))
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        df.to_csv("assets/lyrics/by_artist/"+artist[0]+"_scraped_"+timestr+".csv")
-        if input('Continue (1)? ') != '1':
-            break
+        df.to_csv("assets/lyrics/all_lyrics_scraped_"+timestr+".csv")
