@@ -24,5 +24,13 @@ def remove_and_reg(text):
 def split_into_words(text):
     text.split(" ")
 
+def remove_parens(text):
+    text = text.replace("(", "").replace(")", "")
+    return text
+
+def remove_periods(text):
+    text = text.replace(".", "")
+    return text
+    
 if __name__ == '__main__':
     print("Working")
