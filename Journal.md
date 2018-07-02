@@ -1,5 +1,8 @@
 Notes on the project
 ====================
+## July 1, 2018
+- spacy doesn't have full support for Turkish, but they have some tools that have been useful. An enormous lemmatizer dictionary can look up every word (except stopwords, included in another file) and replace it with the root form.
+- The relationships between words is still not clear. Some cliched phrases are probably good features to include. I started exploring the ngrams to figure out what sorts of phrases to look for.
 
 ## June 26, 2018
 Progress on data collection:
