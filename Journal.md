@@ -1,4 +1,6 @@
-# Notes on the project
+Notes on the project
+====================
+
 ## June 26, 2018
 Progress on data collection:
 - Junks 1 & 2 have been dealt with.

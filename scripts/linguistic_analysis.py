@@ -1,16 +1,21 @@
+#####
+# Import the usual suspects for NLP plus many functions defined in
+# post_scraping_text_processing (which itself imports from turkish_spacy_lemmatizer)
+#####
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 from TurkishStemmer import TurkishStemmer
 from nltk.tokenize import RegexpTokenizer
-from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 import re
 import time
 
-from post_scraping_text_processing import remove_and_reg, split_into_words, remove_parens
+from sklearn.feature_extraction.text import CountVectorizer
 
+from post_scraping_text_processing import remove_and_reg, split_into_words, remove_punctuation, lemmatize
 
 #####
 # Read in data
@@ -28,30 +33,31 @@ df.drop(['real_name', 'title', 'english_score'], axis = 1, inplace=True)
 
 corpus = df['text'].copy()
 corpus = corpus.map(remove_and_reg)
-corpus = corpus.map(remove_parens)
+corpus = corpus.map(remove_punctuation)
 corpus = corpus.map(lambda x: x.lower().split())
 
-def suffix_matchers(line, suffix_list):
-    """Takes a line from the corpus and checks to see how many of the words have a certain ending (passes as a list to account for different morphological possibilities). This assumes that the lines are already lists. Could be fixed if more Turkish texts are going to be made."""
-    suffix_count = 0
-    suffix_length = len(suffix_list[0])
-    for word in line:
-        for suffix_possibility in suffix_list:
-            suffix_count += word[-suffix_length:] == suffix_possibility
-    return suffix_count
+#####
+# Bigram finder: there are several options here. The first uses the corpus as it is above.
+# The second uses the spacy lemmatizer. The third uses the corpus with stopwords removed.
+# All sets of bigrams are put into a pandas Series for counting and sorting.
+#####
 
-i = np.random.randint(0, len(corpus), 1)
-print(corpus.iloc[i])
+def get_bigrams(corp):
+    """Assumes that the input is a list of lists, creates list of bigrams"""
+    corp_sentences = list(corp.map(lambda x: " ".join(x)).values)
+    return  pd.Series([b for l in corp_sentences for b in zip(l.split(" ")[:-1], l.split(" ")[1:])])
 
-print(f"{suffix_matchers(corpus.iloc[i], ['ler', 'lar'])} words end in ler or lar")
+# Basic bigrams
+basic_bigrams = get_bigrams(corpus)
 
-print("{} words end in e or a".format(suffix_matchers(corpus.iloc[i], ['e', 'a'])))
+# Lemmatized bigrams
+lemmatized_corpus = corpus.map(lemmatize)
+lemma_bigrams = get_bigrams(lemmatized_corpus)
 
-print(f"{suffix_matchers(corpus.iloc[i], ['tur', 'dur', 'tür', 'dür', 'tir', 'dir', 'tır' 'dır'])} words end in DIr")
+# text = list(corpus.map(lambda x: " ".join(x)).values)
 
-ts = TurkishStemmer()
-corpus_stemmed = [ts.stem(j) for j in corpus.iloc[i]]
-print(corpus_stemmed[0])
+bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:])]
+print(pd.Series(bigrams).value_counts(ascending=False)[:20])
 
 # i_s = np.random.randint(0, len(corpus), 100)
 #
