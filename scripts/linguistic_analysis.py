@@ -15,7 +15,7 @@ import time
 
 from sklearn.feature_extraction.text import CountVectorizer
 
-from post_scraping_text_processing import remove_and_reg, split_into_words, remove_punctuation, lemmatize
+from post_scraping_text_processing import remove_and_reg, split_into_words, remove_punctuation, lemmatize, remove_turkish_stopwords
 
 #####
 # Read in data
@@ -42,32 +42,61 @@ corpus = corpus.map(lambda x: x.lower().split())
 # All sets of bigrams are put into a pandas Series for counting and sorting.
 #####
 
-def get_bigrams(corp):
-    """Assumes that the input is a list of lists, creates list of bigrams"""
+def get_bigrams(corp, repeats = True):
+    """Assumes that the input is a list of lists, creates pandas Series of bigrams"""
     corp_sentences = list(corp.map(lambda x: " ".join(x)).values)
-    return  pd.Series([b for l in corp_sentences for b in zip(l.split(" ")[:-1], l.split(" ")[1:])])
+    if repeats:
+        return pd.Series([b for l in corp_sentences for b in zip(l.split(" ")[:-1], l.split(" ")[1:])])
+    else:
+        return pd.Series([b for l in corp_sentences for b in zip(l.split(" ")[:-1], l.split(" ")[1:]) if b[0] != b[1]])
 
-# Basic bigrams
+#####
+# Each of the following creates a list of the top 20 bigrams given conditions
+#####
+
+
+# Basic bigrams: No additional processing
 basic_bigrams = get_bigrams(corpus)
 
 # Lemmatized bigrams
 lemmatized_corpus = corpus.map(lemmatize)
 lemma_bigrams = get_bigrams(lemmatized_corpus)
 
-# text = list(corpus.map(lambda x: " ".join(x)).values)
+destopped_corpus = corpus.map(remove_turkish_stopwords)
+destopped_bigrams = get_bigrams(destopped_corpus)
 
-bigrams = [b for l in text for b in zip(l.split(" ")[:-1], l.split(" ")[1:])]
-print(pd.Series(bigrams).value_counts(ascending=False)[:20])
+print("Basic bigrams:\n----------")
+print(basic_bigrams.value_counts()[:20])
+print("Bigrams from lemmatized corpus:\n----------")
+print(lemma_bigrams.value_counts()[:20])
+print("Bigrams from corpus without stopwords:\n----------")
+print(destopped_bigrams.value_counts()[:20])
+print("")
 
-# i_s = np.random.randint(0, len(corpus), 100)
-#
-# for i in i_s:
-#     print(corpus.iloc[i])
-#
-#     print(f"{suffix_matchers(corpus.iloc[i], ['ler', 'lar'])} words end in ler or lar")
-#
-#     print("{} words end in e or a".format(suffix_matchers(corpus.iloc[i], ['e', 'a'])))
-#
-#     print(f"{suffix_matchers(corpus.iloc[i], ['tur', 'dur', 'tür', 'dür', 'tir', 'dir', 'tır' 'dır'])} words end in DIr")
-#
-#     time.sleep(4)
+basic_bigrams = get_bigrams(corpus, repeats = False)
+
+# Lemmatized bigrams
+lemmatized_corpus = corpus.map(lemmatize)
+lemma_bigrams = get_bigrams(lemmatized_corpus, repeats = False)
+
+destopped_corpus = corpus.map(remove_turkish_stopwords)
+destopped_bigrams = get_bigrams(destopped_corpus, repeats = False)
+
+
+print("Basic bigrams without repetition:\n----------")
+print(basic_bigrams.value_counts()[:20])
+print("Bigrams from lemmatized corpus without repetition:\n----------")
+print(lemma_bigrams.value_counts()[:20])
+print("Bigrams from corpus without stopwords or repetition:\n----------")
+print(destopped_bigrams.value_counts()[:20])
+print("")
+
+really_stripped_corpus = corpus.map(remove_turkish_stopwords).map(lemmatize)
+really_stripped_bigrams = get_bigrams(really_stripped_corpus, repeats = False)
+print("Bigrams from corpus without stopwords, lemmatized, and no repetition")
+print(really_stripped_bigrams.value_counts()[:20])
+
+even_more_stripped_corpus = really_stripped_corpus.map(lambda x: [word for word in x if word != 'bir'])
+even_more_stripped_bigrams = get_bigrams(even_more_stripped_corpus, repeats = False)
+print("Bigrams from corpus without stopwords, lemmatized, no repetition, and no word bir")
+print(even_more_stripped_bigrams.value_counts()[:20])
