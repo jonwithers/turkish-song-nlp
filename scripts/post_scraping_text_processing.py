@@ -143,18 +143,33 @@ def drop_more_wrong_language(df):
     df = df[df['artist'] != 'Abidin Biter']
     return df
 
-def clean_bad_langauge(df):
+def format_corpus(df):
+    df['text'] = df['text'].map(lambda x: re.sub(r'a+h* ', 'ah ', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r'A+h* ', 'Ah ', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r'[0-9]', 'bud', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r'_', '', x))
+    return df
+
+def clean_bad_language(df):
     """Wrapper for grooming_langauge, replace_weird_chars, and drop_more_wrong_language"""
     df = grooming_language(df)
     df['text'] = replace_weird_chars(df['text'])
     df = drop_more_wrong_language(df)
+    df = format_corpus(df)
     return df
+
+
 
 if __name__ == '__main__':
     if sys.argv[1] == 'functions':
         print('functions loaded')
     else:
         df = pd.read_csv("../assets/lyrics/master_data_20180626.csv", index_col = 0)
-        df = clean_bad_langauge(df)
+        df = clean_bad_language(df)
         print('df loaded.')
         print(f'{df.shape[0]} rows x {df.shape[1]} columns')
+else:
+    df = pd.read_csv("../assets/lyrics/master_data_20180626.csv", index_col = 0)
+    df = clean_bad_language(df)
+    print('df loaded.')
+    print(f'{df.shape[0]} rows x {df.shape[1]} columns')
