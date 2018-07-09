@@ -8,16 +8,6 @@ import time
 from post_scraping_text_processing import remove_and_reg
 import numpy as np
 
-def check_for_english(text):
-    text_words = text.split(" ")
-    english_words = set(['I', "we're", "the", "an", "one", "to", "give", "love"])
-    counter = 0
-    for word in text_words:
-        if word in english_words:
-            counter += 1
-    return counter
-
-
 client_credentials_manager = SpotifyClientCredentials(client_id = '82b857bc19b8402dbf050cc433158f42', client_secret = '799bcde8e32b40ceaa19793845087b5f')
 sp = spotipy.Spotify(client_credentials_manager = client_credentials_manager)
 

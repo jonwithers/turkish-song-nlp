@@ -31,6 +31,15 @@ def remove_arabic(corpus):
     """Takes in corpus and returns corpus with arabic character lines removed"""
     return corpus[~corpus.str.contains('ض')]
 
+def check_for_english(text):
+    text_words = text.split(" ")
+    english_words = set(['I', "we're", "the", "an", "one", "to", "give", "love"])
+    counter = 0
+    for word in text_words:
+        if word in english_words:
+            counter += 1
+    return counter
+
 def split_into_words(text):
     """splits into words using basic string method"""
     text.split(" ")
@@ -144,14 +153,15 @@ def drop_more_wrong_language(df):
     return df
 
 def format_corpus(df):
-    df['text'] = df['text'].map(lambda x: re.sub(r'a+h* ', 'ah ', x))
-    df['text'] = df['text'].map(lambda x: re.sub(r'A+h* ', 'Ah ', x))
-    df['text'] = df['text'].map(lambda x: re.sub(r'[0-9]', 'bud', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r' a+h* ', 'ah ', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r' A+h* ', 'Ah ', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r'[0-9]', '', x))
     df['text'] = df['text'].map(lambda x: re.sub(r'_', '', x))
     return df
 
 def clean_bad_language(df):
     """Wrapper for grooming_langauge, replace_weird_chars, and drop_more_wrong_language"""
+    df['text'] = df['text'].map(remove_and_reg)
     df = grooming_language(df)
     df['text'] = replace_weird_chars(df['text'])
     df = drop_more_wrong_language(df)
@@ -168,6 +178,7 @@ if __name__ == '__main__':
         df = clean_bad_language(df)
         print('df loaded.')
         print(f'{df.shape[0]} rows x {df.shape[1]} columns')
+        df.to_csv("../assets/lyrics/final_processed.csv")
 else:
     df = pd.read_csv("../assets/lyrics/master_data_20180626.csv", index_col = 0)
     df = clean_bad_language(df)

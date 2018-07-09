@@ -1,3 +1,7 @@
-from lyrics_scraper import get_artists_list
+import pandas as pd
 
-print(get_artists_list('sezen-aksu'))
+train = pd.read_csv("../assets/train.csv", index_col=0)
+print(1 - train["written_precoup"].mean())
+
+test = pd.read_csv("../assets/test.csv", index_col=0)
+print(1 - test["written_precoup"].mean())
