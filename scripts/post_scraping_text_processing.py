@@ -97,10 +97,10 @@ def grooming_language(df):
     df['text'] = df['text'].map(remove_punctuation)
 
     # Step 2: get rid of instrumental songs
-    df = df[~(df['text'].str.contains('Şarkı enstrümantal olduğu için şarkı sözü bulunmamaktadır.'))]
+    df = df[~(df['text'].str.contains('Şarkı enstrümantal olduğu için şarkı sözü bulunmamaktadır'))]
 
     # Step 3: replace the weird x with regular x
-    df['text'] = df['text'].str.replace('×', 'x')
+    df['text'] = df['text'].map(lambda x: x.replace('×', 'x'))
 
     # Step 4: get rid of non-Latin songs
     non_latin_chars = '[ΌΓΜΝΤΧάέήίαγδεζηθικλμνοπρςτυφχψωόБГДЗКМНОПСТЧЩабвгдежзийклмнопрстуфхцчшщъюяѕابتجحخدذرزسشصضطعفقكلمنهوي]'
@@ -153,10 +153,12 @@ def drop_more_wrong_language(df):
     return df
 
 def format_corpus(df):
-    df['text'] = df['text'].map(lambda x: re.sub(r' a+h* ', 'ah ', x))
-    df['text'] = df['text'].map(lambda x: re.sub(r' A+h* ', 'Ah ', x))
+    df['text'] = df['text'].map(lambda x: re.sub("i̇", "i", x))
     df['text'] = df['text'].map(lambda x: re.sub(r'[0-9]', '', x))
-    df['text'] = df['text'].map(lambda x: re.sub(r'_', '', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r'_+', '', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r'-+', '', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r'\*\*+', '', x))
+    df['text'] = df['text'].map(lambda x: re.sub(r'kaynak http&&vvvsarkisozlerihdcom&sarkisozu&zakkumeylulagrisi&', '', x))
     return df
 
 def clean_bad_language(df):

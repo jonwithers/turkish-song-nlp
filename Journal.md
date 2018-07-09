@@ -1,5 +1,14 @@
 Notes on the project
 ====================
+## July 9, 2018
+- Multinomial Naive Bayes models for barely processed data isn't very performant, essentially returning the baseline.
+- Ward clustering on barely processed data is also not very performant, with difficult to interpret clusters.
+- Before returning to these two problems, I will definitely need to do more careful feature engineering.
+- Additionally, these models are very slow to build on my computer. I will figure out how to implement them using Spark. I'll do data preparation on my local computer and use a pipeline in a Databricks notebook to push the data through a model on Spark. Models to make and tune using Spark:
+  - Clustering models (k-means and hierarchical clustering)
+  - Classification models (NaiveBayes and Logistic Regression)
+- 
+
 ## July 1, 2018
 - spacy doesn't have full support for Turkish, but they have some tools that have been useful. An enormous lemmatizer dictionary can look up every word (except stopwords, included in another file) and replace it with the root form.
 - The relationships between words is still not clear. Some cliched phrases are probably good features to include. I started exploring the ngrams to figure out what sorts of phrases to look for.
