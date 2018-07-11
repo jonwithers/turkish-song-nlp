@@ -1,3 +1,12 @@
+###
+# Author: Jon Withers
+# Last Modified: July 11 2018
+#
+#   This script is a collection of cleaning functions that
+#   are applied to the data from the first script.
+#
+
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -70,12 +79,13 @@ def suffix_matchers(line, suffix_list):
 def lemmatize(line):
     """Uses the spacy Turkish lemmatizer to lemmatize words in a list"""
     return_list = []
+    line = line.split()
     for word in line:
         try:
-            return_list.append(LOOKUP[word])
+            return_list.append(LOOKUP[word.lower()])
         except:
-            return_list.append(word)
-    return return_list
+            return_list.append(word.lower())
+    return " ".join(return_list)
 
 def remove_turkish_stopwords(text):
     """removes stopwords using the set from spacy. input text is a list of words."""
@@ -84,7 +94,7 @@ def remove_turkish_stopwords(text):
 #####
 
 def grooming_language(df):
-    """Takes a dataframe and performs 6 steps:
+    """Takes a dataframe and performs 5 steps:
         - gets rid of unnecessary columns
         - gets rid of instrumental songs
         - replaces some dumb characters
@@ -120,6 +130,11 @@ def grooming_language(df):
     return df
 
 def replace_weird_chars(text_col):
+    """
+    After grooming_langauge, this function goes through the remaining
+    Turkish lyrics and makes some replacements to get rid of non-
+    standard characters.
+    """
     text_col = text_col.str.replace('ä', 'a')
     text_col = text_col.str.replace('á', 'a')
     text_col = text_col.str.replace('ß', 'b')
@@ -139,6 +154,10 @@ def replace_weird_chars(text_col):
     return text_col
 
 def drop_more_wrong_language(df):
+    """
+    This function somewhat inelegantly drops bad rows based on some
+    basic criteria that other scrubbers might miss.
+    """
     df.drop(df[df['text'].str.contains('qu')].index, inplace = True)
     df.drop(df[(df['text'].str.contains('of') & df['text'].str.contains('my')) | (df['text'].str.contains('the') & df['text'].str.contains('you'))].index, inplace = True)
     df.drop(df[(df['text'].str.contains('your'))].index, inplace = True)
@@ -153,6 +172,11 @@ def drop_more_wrong_language(df):
     return df
 
 def format_corpus(df):
+    """
+    This function makes some important substitutions to get rid
+    of character sequences that transcribers seem to love but
+    that don't add anything.
+    """
     df['text'] = df['text'].map(lambda x: re.sub("i̇", "i", x))
     df['text'] = df['text'].map(lambda x: re.sub(r'[0-9]', '', x))
     df['text'] = df['text'].map(lambda x: re.sub(r'_+', '', x))
@@ -160,6 +184,20 @@ def format_corpus(df):
     df['text'] = df['text'].map(lambda x: re.sub(r'\*\*+', '', x))
     df['text'] = df['text'].map(lambda x: re.sub(r'kaynak http&&vvvsarkisozlerihdcom&sarkisozu&zakkumeylulagrisi&', '', x))
     return df
+
+###
+# This final function brings together the most vital of the functions
+# above. In particular:
+#   - remove_and_reg removes all ads and unnecessary whitespace
+#   - grooming_langauge performs 5 important steps
+#   - replace_weird_chars replaces characters in remaining Turkish
+#       lyrics
+#   - drop_more_wrong_language gets rid of more bad language
+#   - format_corpus makes some important replacements
+#
+# Other scripts (especially train_test_split.py) run this function to
+# clean the joined data.
+###
 
 def clean_bad_language(df):
     """Wrapper for grooming_langauge, replace_weird_chars, and drop_more_wrong_language"""
@@ -174,7 +212,7 @@ def clean_bad_language(df):
 
 if __name__ == '__main__':
     if sys.argv[1] == 'functions':
-        print('functions loaded')
+        print('Text processing functions loaded.')
     else:
         df = pd.read_csv("../assets/lyrics/master_data_20180626.csv", index_col = 0)
         df = clean_bad_language(df)
