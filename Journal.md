@@ -1,5 +1,26 @@
 Notes on the project
+
 ====================
+## July 11, 2018
+- Thanks to Spark, I have a decent classifier now. I can report more than 60% areaUnderROC for distinguishing between the two classes.
+- Hierarchical clustering in Python produces a good dendrogram that can be used to figure out how many clusters I need. I have a pretty good idea of what the big separation in the data might be.
+- I need to clarify the data pipeline:
+  - Scraping:
+    - Start with lyrics_scraper.py to get the lyrics
+    - Get year data from spotify_scraper.py
+    - Produces files all_lyrics_scraped_20180625-155423.csv and lyrics_with_spotify.csv
+    - Combine these in Notebook 01 to produce master_data_20180626.csv
+  - Cleaning:
+    - Cleaning functions gathered in post_scraping_text_processing.py
+    - Functions developed and implemented in Notebook 02
+    - train_test_split.py produces a new train and test set with target column
+  - EDA:
+    - Notebook 03 produces charts and graphs
+    - Feature engineering in Notebook 04 uses the output of train_test_split.py
+  - Modeling:
+    - Supervised learning models in Scala html files
+    - Unsupervised learning in Notebook 05.
+
 ## July 9, 2018
 - Multinomial Naive Bayes models for barely processed data isn't very performant, essentially returning the baseline.
 - Ward clustering on barely processed data is also not very performant, with difficult to interpret clusters.
@@ -7,7 +28,6 @@ Notes on the project
 - Additionally, these models are very slow to build on my computer. I will figure out how to implement them using Spark. I'll do data preparation on my local computer and use a pipeline in a Databricks notebook to push the data through a model on Spark. Models to make and tune using Spark:
   - Clustering models (k-means and hierarchical clustering)
   - Classification models (NaiveBayes and Logistic Regression)
-- 
 
 ## July 1, 2018
 - spacy doesn't have full support for Turkish, but they have some tools that have been useful. An enormous lemmatizer dictionary can look up every word (except stopwords, included in another file) and replace it with the root form.
