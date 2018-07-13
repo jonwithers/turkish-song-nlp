@@ -14,6 +14,8 @@ This corpus is an opportunity to explore how Turkish song lyrics are organized&m
 ### Supervised learning - classification
 With the year a song was published available, I built a classifier capable of sorting songs into time-based categories based on text data alone.
 
+![alt text](https://github.com/jonwithers/turkish-song-nlp/blob/master/assets/visualizations/wordcloud1.png "Logo Title Text 1")
+
 ## Goals and results
 - Produce a large, clean corpus of Turkish-language song lyrics with data labels.
   - Achieved by scraping from a large lyrics site, matching these songs to Spotify queries for release date, and grooming to reduce the number of non-Turkish songs.
