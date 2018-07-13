@@ -25,7 +25,7 @@ With the year a song was published available, I built a classifier capable of so
   - Achieved with  a surprising degree of accuracy using a Support Vector Classification model (areaUnderROC socre of 63%). This result is higher than expected because there is a lot of noise in this data.
   - Built a Logistic Regression model that beats the baseline (areaUnderROC score of 55%). This model allows for better interpretation--for example, the engineered features of vocable length are among the most significant according to a Chi-square test.
 
-![alt text](https://github.com/jonwithers/turkish-song-nlp/blob/master/assets/visualizations/ward_cluster.png | width=100)
+<img src="https://github.com/jonwithers/turkish-song-nlp/blob/master/assets/visualizations/ward_cluster.png" width="100" height="300">
 
 
 ## Limitations
