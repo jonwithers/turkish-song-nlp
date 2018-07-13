@@ -23,8 +23,8 @@ With the year a song was published available, I built a classifier capable of so
   - Achieved with  a surprising degree of accuracy using a Support Vector Classification model (areaUnderROC socre of 63%). This result is higher than expected because there is a lot of noise in this data.
   - Built a Logistic Regression model that beats the baseline (areaUnderROC score of 55%). This model allows for better interpretation--for example, the engineered features of vocable length are among the most significant according to a Chi-square test.
 
-## Risks and limitations
-The biggest limitation of this project is that the date column is difficult to validate. Because songs were scraped from one site and merged to a list gathered from another source, the matching between song and date may not be accurate. To limit this, I accepted only exact matches with both artist and song title. However, it's possible that even if the song is exactly the same, the release date might not represent the time period in which the song was produced.
+## Limitations
+The biggest limitation of this project is that the date column is difficult to validate. Because songs were scraped from one site and merged to a list gathered from another source, the matching between song and date may not be accurate. To limit this, I accepted only exact matches with both artist and song title. However, it's possible that even if the song is exactly the same, the release date might not represent the time period in which the song was produced.  
 
 ## Further work
 At this point, I have accomplished what I set out to do. There are more areas to explore with this data and models:
@@ -67,3 +67,16 @@ Since this project uses multiple notebooks, it may be useful to explain the data
     - `discogs_scraper.py` makes queries to Discogs' API to attempt to get year data for every song in the lyrics dataframe. Output is `discog_year.csv`. Since this didn't add anything to the project it is not currently implemented.
   - `post_scraping_text_processing.py` is a proto-module of functions for text processing. Because other NLP libraries are unsuited for Turkish lyrics data, these functions are written specifically for this data.
   - `assemble_all_data.py` creates the final data using inputs from notebooks.
+
+## Sources  
+[spaCy Turkish tools](https://github.com/explosion/spaCy/tree/master/spacy/lang/tr)
+
+[alternatifim.com](https://sarki.alternatifim.com/)
+
+[Spotify](https://developer.spotify.com/documentation/web-api/)
+
+[discogs](https://www.discogs.com/developers/)
+
+[SpotiPy (Spotify Client)](https://github.com/plamere/spotipy)
+
+[Discogs Client](https://github.com/discogs/discogs_client)
