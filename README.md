@@ -13,6 +13,7 @@ I chose this project to draw on my background as an ethnomusicologist as well as
 This corpus is an opportunity to explore how Turkish song lyrics are organized&mdash;in other words, what categories or genres are present in the data. I used hierarchical modeling and discovered a major division in the data that correlates directly with musical genres.
 ### Supervised learning - classification
 With the year a song was published available, I built a classifier capable of sorting songs into time-based categories based on text data alone.  
+[Click here for the notebook](https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/4308785734414075/391280193276026/8044818614123031/latest.html)
 
 ***Word cloud***
 ![alt text](https://github.com/jonwithers/turkish-song-nlp/blob/master/assets/visualizations/wordcloud1.png "Logo Title Text 1")
