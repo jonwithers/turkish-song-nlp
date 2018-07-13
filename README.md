@@ -12,13 +12,36 @@ I chose this project to draw on my background as an ethnomusicologist as well as
 ### Unsupervised learning - topic modeling
 This corpus is an opportunity to explore how Turkish song lyrics are organized&mdash;in other words, what categories or genres are present in the data. I used hierarchical modeling and discovered a major division in the data that correlates directly with musical genres.
 ### Supervised learning - classification
-With the year a song was published available, I built a classifier capable of sorting songs into time-based categories based on text data alone with a score of 63% (area under the ROC curve).
+With the year a song was published available, I built a classifier capable of sorting songs into time-based categories based on text data alone.
+
+## Goals and results
+- Produce a large, clean corpus of Turkish-language song lyrics with data labels.
+  - Achieved by scraping from a large lyrics site, matching these songs to Spotify queries for release date, and grooming to reduce the number of non-Turkish songs.
+- Build a model for clustering these songs.
+  - Achieved using agglomerative hierarchical clustering. The most important division in the data is between songs that use more archaic vocables (e.g. folk songs) and songs that use a vocabulary similar to modern spoken Turkish (e.g. hip hop).
+- Build a model to classify these songs based on year.
+  - Achieved with  a surprising degree of accuracy using a Support Vector Classification model (areaUnderROC socre of 63%). This result is higher than expected because there is a lot of noise in this data.
+  - Built a Logistic Regression model that beats the baseline (areaUnderROC score of 55%). This model allows for better interpretation--for example, the engineered features of vocable length are among the most significant according to a Chi-square test.
+
+## Risks and limitations
+The biggest limitation of this project is that the date column is difficult to validate. Because songs were scraped from one site and merged to a list gathered from another source, the matching between song and date may not be accurate. To limit this, I accepted only exact matches with both artist and song title. However, it's possible that even if the song is exactly the same, the release date might not represent the time period in which the song was produced.
 
 ## Further work
 At this point, I have accomplished what I set out to do. There are more areas to explore with this data and models:
 - While a good classifier, the model I selected is a black box. To interpret it, I could build a LIME model. However, the Spark implementation of LIME is unclear.
 - I could try other clustering methods to be able to further uncover patterns in the data. The division between archaic and modern language that I've found is interesting but there is likely more to the data.
 - I can convert my functional approach to an object-oriented library that can be used for other Turkish-language tasks.
+
+## Data pipeline
+Since this project uses multiple notebooks, it may be useful to explain the data flow precisely.
+
+| File | Source | Role |
+|------|--------|------|
+|list_of_artists.csv   |get_all_artists.py   |A list of all artists    |
+|all_lyrics_scraped_20180625-155423.csv  | lyrics_scraper.py  | Lots of data gathered from alternatifim using the list of artists   |
+|lyrics_with_spotify.csv   |spotify_scraper.py   |contains date data   |
+|master_data_20180626.csv   |Notebook 01   |Songs, artists, albums, and date   |
+|assembled_20180711.csv   | Notebooks 02-04   |Cleaned and groomed and ready for modelling  |
 
 ## Table of contents
 - assets
