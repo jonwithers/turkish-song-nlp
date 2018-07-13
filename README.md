@@ -74,9 +74,9 @@ Since this project uses multiple notebooks, it may be useful to explain the data
   - `assemble_all_data.py` creates the final data using inputs from notebooks.
 
 ## Sources  
-[spaCy Turkish tools](https://github.com/explosion/spaCy/tree/master/spacy/lang/tr)
-[alternatifim.com](https://sarki.alternatifim.com/)
-[Spotify](https://developer.spotify.com/documentation/web-api/)
-[discogs](https://www.discogs.com/developers/)
-[SpotiPy (Spotify Client)](https://github.com/plamere/spotipy)
-[Discogs Client](https://github.com/discogs/discogs_client)
+[spaCy Turkish tools](https://github.com/explosion/spaCy/tree/master/spacy/lang/tr)  
+[alternatifim.com](https://sarki.alternatifim.com/)  
+[Spotify](https://developer.spotify.com/documentation/web-api/)  
+[discogs](https://www.discogs.com/developers/)  
+[SpotiPy (Spotify Client)](https://github.com/plamere/spotipy)  
+[Discogs Client](https://github.com/discogs/discogs_client)  
